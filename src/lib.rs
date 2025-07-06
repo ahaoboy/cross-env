@@ -11,11 +11,14 @@ pub enum Error {
     CommandError,
 }
 
-pub fn parse_input(args: &[String]) -> (Vec<(&str, &str)>, usize) {
+pub fn parse_input<'a, S>(args: &'a [S]) -> (Vec<(&'a str, &'a str)>, usize)
+where
+    S: AsRef<str> + 'a,
+{
     let mut idx = 0;
     let mut v = vec![];
     for i in args {
-        if let Some(pair) = i.split_once('=') {
+        if let Some(pair) = i.as_ref().split_once('=') {
             v.push(pair);
             idx += 1;
         } else {
@@ -52,4 +55,21 @@ pub fn cross_env() -> Result<(), Error> {
     let cmd = &args[idx];
     let cmd_args = &args[idx + 1..];
     run(cmd, cmd_args, &envs)
+}
+
+#[cfg(test)]
+mod test {
+    use crate::parse_input;
+
+    #[test]
+    fn test_parse_input() {
+        for (args, expect_envs, expect_idx) in [
+            (vec!["a=1"], vec![("a", "1")], 1),
+            (vec!["a=1", "b=2"], vec![("a", "1"), ("b", "2")], 2),
+        ] {
+            let (envs, idx) = parse_input(&args);
+            assert_eq!(envs, expect_envs);
+            assert_eq!(idx, expect_idx);
+        }
+    }
 }
