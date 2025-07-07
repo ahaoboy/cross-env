@@ -7,8 +7,8 @@ pub enum Error {
     Io(#[from] std::io::Error),
     #[error("key is empty")]
     EmptyKey,
-    #[error("command error")]
-    CommandError,
+    #[error("no command provided")]
+    NoCommand,
 }
 
 pub fn parse_input<'a, S>(args: &'a [S]) -> (Vec<(&'a str, &'a str)>, usize)
@@ -52,6 +52,14 @@ pub fn cross_env() -> Result<(), Error> {
     let args: Vec<String> = env::args().skip(1).collect();
     let (envs, idx) = parse_input(&args);
 
+    if idx == 0 {
+        println!("USAGE:\ncross-env [VAR1=val1 [VAR2=val2 ...]] command [args...]");
+        std::process::exit(0);
+    }
+
+    if idx >= args.len() {
+        return Err(Error::NoCommand);
+    }
     let cmd = &args[idx];
     let cmd_args = &args[idx + 1..];
     run(cmd, cmd_args, &envs)
