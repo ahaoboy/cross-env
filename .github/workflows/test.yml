@@ -27,11 +27,6 @@ jobs:
           components: rustfmt,clippy
           rustflags: "-A warnings"
           toolchain: "stable"
-          target: wasm32-unknown-unknown
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-      - uses: cargo-bins/cargo-binstall@main
       - name: Run
         run: |
           cargo -q test
