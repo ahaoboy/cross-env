@@ -13,7 +13,7 @@ defaults:
 
 jobs:
   create-release:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: taiki-e/create-gh-release-action@v1
@@ -27,10 +27,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - target: x86_64-apple-darwin
-            os: macos-13
           - target: aarch64-apple-darwin
-            os: macos-14
+            os: macos-latest
           - target: x86_64-pc-windows-msvc
             os: windows-latest
             RUSTFLAGS: -C target-feature=+crt-static
@@ -39,15 +37,15 @@ jobs:
           # - target: arm64ec-pc-windows-msvc
           #   os: windows-latest
           - target: aarch64-unknown-linux-musl
-            os: ubuntu-24.04
+            os: ubuntu-latest
           - target: aarch64-unknown-linux-gnu
-            os: ubuntu-24.04
+            os: ubuntu-latest
           - target: x86_64-unknown-linux-musl
-            os: ubuntu-24.04
+            os: ubuntu-latest
           - target: x86_64-unknown-linux-gnu
-            os: ubuntu-24.04
+            os: ubuntu-latest
           - target: aarch64-linux-android
-            os: ubuntu-24.04
+            os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
